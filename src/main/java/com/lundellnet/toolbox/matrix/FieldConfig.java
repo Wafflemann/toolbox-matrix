@@ -17,29 +17,30 @@
  */
 package com.lundellnet.toolbox.matrix;
 
-import com.lundellnet.toolbox.api.data_access.annotations.MatrixDomainConfig;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
-class DimensionConfig <D extends Enum<D>, M extends Enum<M>> {
+class FieldConfig {
+
+	private final ParsingStep parsingStep;
+	private final Annotation fieldAnnotation;
+	private final Field field;	
 	
-	private final MatrixDomainConfig domainConfig;
-	private final D domain;
-	private final M model;
-	
-	DimensionConfig(MatrixDomainConfig domainConfig, D domain, M model) {
-		this.domainConfig = domainConfig;
-		this.domain = domain;
-		this.model = model;
+	FieldConfig(ParsingStep parsingStep, Annotation fieldAnnotation, Field field) {
+		this.parsingStep = parsingStep;
+		this.fieldAnnotation = fieldAnnotation;
+		this.field = field;
 	}
 	
-	MatrixDomainConfig domainConf() {
-		return domainConfig;
+	ParsingStep step() {
+		return parsingStep;
 	}
 	
-	D domain() {
-		return domain;
+	Annotation annotation() {
+		return fieldAnnotation;
 	}
 	
-	M model() {
-		return model;
+	Field field() {
+		return field;
 	}
 }

@@ -18,12 +18,13 @@
 package com.lundellnet.toolbox.matrix;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.lundellnet.toolbox.api.data_access.annotations.MatrixField;
 import com.lundellnet.toolbox.api.data_access.annotations.MatrixFields;
@@ -41,36 +42,56 @@ public enum ParsingStep {
 				matchers.put(Constraints.Mappings.MATCH_I_DOMAIN, c.domain().ordinal());
 				matchers.put(Constraints.Mappings.MATCH_I_MODEL, c.model().ordinal());
 				
-				MatchingConstraint.getMatchingStream(Constraints.Mappings.class, matchers)
-					.map((o) -> o.apply(Arrays.stream(((PointMappings) a).value())).collect(Collectors.toList()));
+				return MatchingConstraint.getMatcher(matchers)
+						.apply(Arrays.stream(((PointMappings) a).value()))
+						.collect(Collectors.toList());
 			} else if (a.annotationType().equals(PointMapping.class)) {
+				List<PointMapping> mappings = new ArrayList<>();
 				
+				mappings.add((PointMapping) a);
+				
+				return mappings;
 			}
 			
-			return null;
+			return null;//TODO error
 		}
 	),
 	TRANSVERSE(
 		new Class<?>[]{MatrixFields.class, MatrixField.class},
 		(a, c) -> {
 			if (a.annotationType().equals(MatrixFields.class)) {
+				Map<Constraints.Fields, Object> matchers = new EnumMap<>(Constraints.Fields.class);
 				
+				matchers.put(Constraints.Fields.MATCH_I_DOMAIN, c.domain().ordinal());
+				matchers.put(Constraints.Fields.MATCH_I_MODEL, c.model().ordinal());
+				
+				return MatchingConstraint.getMatcher(matchers)
+						.apply(Arrays.stream(((MatrixFields) a).value()))
+						.collect(Collectors.toList());
 			} else if (a.annotationType().equals(MatrixField.class)) {
+				List<MatrixField> fields = new ArrayList<>();
 				
+				fields.add((MatrixField) a);
+				
+				return fields;
 			}
-			
-			return null;
+
+			return null;//TODO error
 		}
 	);
 	
 	private final Class<?>[] stepTypes;
-	private final BiFunction<Annotation, DimensionConfig<?, ?>, ? extends Annotation> annotationProcess;
+	private final BiFunction<Annotation, DimensionConfig<?, ?>, List<? extends Annotation>> dimensionMatcher;
 	
 	private ParsingStep(
-			Class<?>[] stepTypes, BiFunction<Annotation, DimensionConfig<?, ?>, ? extends Annotation> annotationProcess
+			Class<?>[] stepTypes, BiFunction<Annotation, DimensionConfig<?, ?>, List<? extends Annotation>> dimensionMatcher
 	) {
 		this.stepTypes = stepTypes;
-		this.annotationProcess = annotationProcess;
+		this.dimensionMatcher = dimensionMatcher;
+	}
+	
+	BiFunction<Annotation, DimensionConfig<?, ?>, List<? extends Annotation>> dimensionMatcher() {
+		return dimensionMatcher;
 	}
 	
 	public static ParsingStep fromValue(Class<?> annotationType) {

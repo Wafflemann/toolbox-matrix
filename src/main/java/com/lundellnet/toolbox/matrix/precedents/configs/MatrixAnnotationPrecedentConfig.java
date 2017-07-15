@@ -20,11 +20,11 @@ package com.lundellnet.toolbox.matrix.precedents.configs;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
-import com.lundellnet.toolbox.api.precedents.config.PrecedentConf;
+import com.lundellnet.toolbox.api.precedents.compilation.PrecedentConf;
 import com.lundellnet.toolbox.matrix.ParsingStep;
 
-public interface MatrixAnnotationPrecedentConfig <T, R>
-		extends PrecedentConf<T, R>
+public interface MatrixAnnotationPrecedentConfig <I, O>
+		extends PrecedentConf<I, O>
 {
 	ParsingStep decision();
 	

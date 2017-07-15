@@ -17,29 +17,9 @@
  */
 package com.lundellnet.toolbox.matrix;
 
-import com.lundellnet.toolbox.api.data_access.annotations.MatrixDomainConfig;
+import com.lundellnet.toolbox.matrix.precedents.MatrixAnnotationPrecedent;
 
-class DimensionConfig <D extends Enum<D>, M extends Enum<M>> {
+abstract class Deduce <T, I, O> {
 	
-	private final MatrixDomainConfig domainConfig;
-	private final D domain;
-	private final M model;
-	
-	DimensionConfig(MatrixDomainConfig domainConfig, D domain, M model) {
-		this.domainConfig = domainConfig;
-		this.domain = domain;
-		this.model = model;
-	}
-	
-	MatrixDomainConfig domainConf() {
-		return domainConfig;
-	}
-	
-	D domain() {
-		return domain;
-	}
-	
-	M model() {
-		return model;
-	}
+	protected abstract MatrixAnnotationPrecedent<I, O> deducePrecedence(T t);
 }

@@ -22,7 +22,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 import com.lundellnet.toolbox.api.data_access.annotations.MappingProperty;
 import com.lundellnet.toolbox.api.data_access.annotations.MatrixComponent;
@@ -39,16 +38,11 @@ public class MatrixProperties
 			propertyDimensionMatchers.put(Constraints.Properties.MATCH_I_DOMAIN, conf.domain().ordinal());
 			propertyDimensionMatchers.put(Constraints.Properties.MATCH_I_MODEL, conf.model().ordinal());
 			
-			return MatchingConstraint.getMatchingStream(Constraints.Properties.class,  propertyDimensionMatchers)
+			return MatchingConstraint.getMatcher(propertyDimensionMatchers)
+					.apply(Arrays.stream(props))
 					.collect(
 							() -> new Properties(),
-							(p, o) -> o.apply(Arrays.stream(props))
-										.collect(Collectors.toMap(
-											MappingProperty::key,
-											MappingProperty::value,
-											(l, r) -> l,
-											() -> p
-										)),
+							(p, a) -> p.setProperty(a.key(), a.value()),
 							(p1, p2) -> p1.putAll(p2)
 					);
 		};

@@ -17,29 +17,33 @@
  */
 package com.lundellnet.toolbox.matrix;
 
-import com.lundellnet.toolbox.api.data_access.annotations.MatrixDomainConfig;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
-class DimensionConfig <D extends Enum<D>, M extends Enum<M>> {
+import com.lundellnet.toolbox.matrix.precedents.configs.MatrixAnnotationPrecedentConfig;
+
+abstract class AbstractPrecedentConfig <I, O>
+		implements MatrixAnnotationPrecedentConfig<I, O>
+{
+	private final FieldConfig fConf;
 	
-	private final MatrixDomainConfig domainConfig;
-	private final D domain;
-	private final M model;
-	
-	DimensionConfig(MatrixDomainConfig domainConfig, D domain, M model) {
-		this.domainConfig = domainConfig;
-		this.domain = domain;
-		this.model = model;
+	AbstractPrecedentConfig(FieldConfig fConf) {
+		this.fConf = fConf;
 	}
 	
-	MatrixDomainConfig domainConf() {
-		return domainConfig;
+	@Override
+	public ParsingStep decision() {
+		return fConf.step();
 	}
-	
-	D domain() {
-		return domain;
+
+	@Override
+	public Class<? extends Annotation> annotationType() {
+		return fConf.annotation().annotationType();
 	}
-	
-	M model() {
-		return model;
+
+	@Override
+	public Field field() {
+		return fConf.field();
 	}
+
 }

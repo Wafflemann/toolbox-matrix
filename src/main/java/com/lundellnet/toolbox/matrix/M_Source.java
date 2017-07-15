@@ -34,33 +34,11 @@ import com.lundellnet.toolbox.matrix.exceptions.MatrixIndexingException;
 
 public class M_Source <D extends Enum<D>, M extends Enum<M>> {
 	
-	private static abstract class AbstractDimensionConfig <D extends Enum<D>, M extends Enum<M>>
-			implements DimensionConfig<D, M>
-	{
-		private final MatrixDomainConfig domainConf;
-		private final D domainIdt;
-		
-		AbstractDimensionConfig(MatrixDomainConfig domainConf, D domainIdt) {
-			this.domainConf = domainConf;
-			this.domainIdt = domainIdt;
-		}
-		
-		@Override
-		public MatrixDomainConfig domainConf() {
-			return domainConf;
-		}
-		
-		@Override
-		public D domain() {
-			return domainIdt;
-		}
-	}
-	
 	private final Class<?> sourceClass;
 	private final MatrixSource src;
 	
 	private final Map<Class<?>, MatrixItemAdapter<?, ?>> srcAdapters = new HashMap<>();
-	private final EnumMap<D, EnumMap<M, M_Dimension<D, M>>> domains;
+	private final EnumMap<D, EnumMap<M, M_Dimension<D, M>>> dimension;
 	
 	@SuppressWarnings("unchecked")
 	M_Source(Class<?> sourceClass) {
@@ -75,7 +53,7 @@ public class M_Source <D extends Enum<D>, M extends Enum<M>> {
 		}
 
 		this.sourceClass = sourceClass;
-		this.domains = Arrays.stream(src.domainConfig()).map((c) -> {
+		this.dimension = Arrays.stream(src.domainConfig()).map((c) -> {
 				D domainIdt = (c.i_domain() == -1) ?
 						(D) Reflect.enumValueOf(src.domainEnum(), c.domain())
 					:
@@ -83,12 +61,7 @@ public class M_Source <D extends Enum<D>, M extends Enum<M>> {
 				return new SimpleEntry<D, EnumMap<M, M_Dimension<D, M>>>(
 						domainIdt,
 						Arrays.stream((M[]) Reflect.enumValues(c.modelEnum())).map(
-								(e) -> new AbstractDimensionConfig<D, M>(c, domainIdt) {
-									@Override
-									public M model() {
-										return e;
-									}
-								}
+								(e) -> new DimensionConfig<D, M>(c, domainIdt, e)
 						).collect(Collectors.toMap(
 							DimensionConfig::model,
 							(dConf) -> new M_Dimension<>(dConf, this),

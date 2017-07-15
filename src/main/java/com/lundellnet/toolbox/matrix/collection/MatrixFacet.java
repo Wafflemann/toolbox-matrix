@@ -21,28 +21,31 @@ import java.lang.reflect.Field;
 import java.util.function.Supplier;
 
 import com.lundellnet.toolbox.matrix.M_Component;
+import com.lundellnet.toolbox.matrix.precedents.MatrixAnnotationPrecedent;
 import com.lundellnet.toolbox.obj.facets.Facet;
 
 public abstract class MatrixFacet <I, O>
 		implements Facet<Field, PermutationElementConfig<I, O>>
 {
-	private final M_Component<?, ?> mComponent;
+	private final M_Component<?, ?, ?> mComponent;
 	private final Supplier<?> parentSupplier;
 	private final Field dataField;
 	
 	protected MatrixFacet(
-			M_Component<?, ?> mComponent, Supplier<?> parentSupplier, Field dataField
+			M_Component<?, ?, ?> mComponent, Supplier<?> parentSupplier, Field dataField
 	) {
 		this.mComponent = mComponent;
 		this.parentSupplier = parentSupplier;
 		this.dataField = dataField;
 	}
 	
-	Class<?> parentClass() {
-		return mComponent.componentClass();
+	protected abstract MatrixAnnotationPrecedent<I, O> precedent();
+	
+	protected Class<?> parentClass() {
+		return mComponent.getComponentClass();
 	}
 	
-	Supplier<?> parentSupplier() {
+	protected Supplier<?> parentSupplier() {
 		return parentSupplier;
 	}
 	

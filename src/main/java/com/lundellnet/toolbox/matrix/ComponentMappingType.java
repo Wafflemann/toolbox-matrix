@@ -17,29 +17,6 @@
  */
 package com.lundellnet.toolbox.matrix;
 
-import com.lundellnet.toolbox.api.data_access.annotations.MatrixDomainConfig;
-
-class DimensionConfig <D extends Enum<D>, M extends Enum<M>> {
-	
-	private final MatrixDomainConfig domainConfig;
-	private final D domain;
-	private final M model;
-	
-	DimensionConfig(MatrixDomainConfig domainConfig, D domain, M model) {
-		this.domainConfig = domainConfig;
-		this.domain = domain;
-		this.model = model;
-	}
-	
-	MatrixDomainConfig domainConf() {
-		return domainConfig;
-	}
-	
-	D domain() {
-		return domain;
-	}
-	
-	M model() {
-		return model;
-	}
+enum ComponentMappingType {
+	PROVIDER, ROOT;
 }

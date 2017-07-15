@@ -17,29 +17,21 @@
  */
 package com.lundellnet.toolbox.matrix;
 
-import com.lundellnet.toolbox.api.data_access.annotations.MatrixDomainConfig;
-
-class DimensionConfig <D extends Enum<D>, M extends Enum<M>> {
+class FieldInstigate <P extends Enum<P>> {
 	
-	private final MatrixDomainConfig domainConfig;
-	private final D domain;
-	private final M model;
+	private final Class<?> componentClass;
+	private final P componentPlane;
 	
-	DimensionConfig(MatrixDomainConfig domainConfig, D domain, M model) {
-		this.domainConfig = domainConfig;
-		this.domain = domain;
-		this.model = model;
+	FieldInstigate(Class<?> componentClass, P componentPlane) {
+		this.componentClass = componentClass;
+		this.componentPlane = componentPlane;
 	}
 	
-	MatrixDomainConfig domainConf() {
-		return domainConfig;
+	Class<?> component() {
+		return componentClass;
 	}
 	
-	D domain() {
-		return domain;
-	}
-	
-	M model() {
-		return model;
+	P plane() {
+		return componentPlane;
 	}
 }

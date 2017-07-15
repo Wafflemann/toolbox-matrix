@@ -24,8 +24,9 @@ import com.lundellnet.toolbox.api.precedents.Precedent;
 import com.lundellnet.toolbox.matrix.ParsingStep;
 import com.lundellnet.toolbox.matrix.precedents.configs.MatrixAnnotationPrecedentConfig;
 
-public interface MatrixAnnotationPrecedent <T, R>
-		extends Precedent<ParsingStep, T, R, MatrixAnnotationPrecedentConfig<T, R>>
+@FunctionalInterface
+public interface MatrixAnnotationPrecedent <I, O>
+		extends Precedent<ParsingStep, I, O, MatrixAnnotationPrecedentConfig<I, O>>
 {
 	default Class<? extends Annotation> annotationType() {
 		return conf().annotationType();
